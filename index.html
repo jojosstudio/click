@@ -28,7 +28,7 @@
     <button id="clickButton">Klicken!</button>
     <div id="stats">Anzahl der Klicks: 0</div>
 
-    <button id="generatePdf">PDF erstellen</button>
+    <button id="generatePdf">PDF erstellen und auf Server speichern</button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
@@ -42,7 +42,7 @@
             statsDiv.innerText = `Anzahl der Klicks: ${clickCount}`;
         });
 
-        // PDF-Erstellung
+        // PDF-Erstellung und an den Server senden
         document.getElementById('generatePdf').addEventListener('click', function () {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -50,9 +50,25 @@
             // PDF-Inhalt
             doc.text(20, 20, 'Click-Tracker Statistiken');
             doc.text(20, 30, `Anzahl der Klicks: ${clickCount}`);
-            
-            // PDF speichern
-            doc.save('click_stats.pdf');
+
+            // PDF in Blob umwandeln
+            const pdfBlob = doc.output('blob');
+
+            // PDF per POST an den Server senden
+            const formData = new FormData();
+            formData.append('file', pdfBlob, 'click_stats.pdf');
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert('PDF wurde erfolgreich auf dem Server gespeichert!');
+            })
+            .catch(error => {
+                console.error('Fehler beim Hochladen:', error);
+            });
         });
     </script>
 </body>
