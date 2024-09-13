@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klick-Zähler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #clickButton {
+            padding: 15px 30px;
+            font-size: 20px;
+            margin: 20px;
+            cursor: pointer;
+        }
+        #stats {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Click-Tracker</h1>
+    <button id="clickButton">Klicken!</button>
+    <div id="stats">Anzahl der Klicks: 0</div>
+
+    <button id="generatePdf">PDF erstellen</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        let clickCount = 0;
+        const clickButton = document.getElementById('clickButton');
+        const statsDiv = document.getElementById('stats');
+
+        // Klick-Zähler aktualisieren
+        clickButton.addEventListener('click', function () {
+            clickCount++;
+            statsDiv.innerText = `Anzahl der Klicks: ${clickCount}`;
+        });
+
+        // PDF-Erstellung
+        document.getElementById('generatePdf').addEventListener('click', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // PDF-Inhalt
+            doc.text(20, 20, 'Click-Tracker Statistiken');
+            doc.text(20, 30, `Anzahl der Klicks: ${clickCount}`);
+            
+            // PDF speichern
+            doc.save('click_stats.pdf');
+        });
+    </script>
+</body>
+</html>
